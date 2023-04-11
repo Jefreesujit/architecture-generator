@@ -4,25 +4,28 @@ import "./App.css";
 
 function App() {
   const [prompt, setPrompt] = useState("");
-  const [result, setResult] = useState("");
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [placeholder, setPlaceholder] = useState("Wall with a photo frame");
+  const [placeholder, setPlaceholder] = useState("3D design of a living room interior");
+  const [size, setSize] = useState("256x256");
+  const [n, setN] = useState(1);
+
   const configuration = new Configuration({
-    apiKey: process.env.ARCHGEN_OPENAI_API_KEY,
+    apiKey: process.env.ARCHGEN_OPENAI_API_KEY || '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',
   });
 
   const openai = new OpenAIApi(configuration);
 
-  const generateImage = async () => {
-    setPlaceholder(`Search "${prompt}"..`);
+  const generateImages = async () => {
+    setPlaceholder(`"${prompt}"..`);
     setLoading(true);
     const res = await openai.createImage({
       prompt: prompt,
-      n: 1,
-      size: "512x512",
+      n: n,
+      size: size,
     });
     setLoading(false);
-    setResult(res.data.data[0].url);
+    setResults(res.data.data.map((item) => item.url));
   };
 
   return (
@@ -32,7 +35,26 @@ function App() {
       </header>
       <div className="app-main">
         <div className="app-section">
-          <h2 className="app-section-title">Generate an Image using OpenAI API</h2>
+          <h2 className="app-section-title">Generate Images</h2>
+          <div className="app-dropdown-section-container">
+            <div className="app-dropdown-section">
+              <label htmlFor="size-dropdown" className="app-dropdown-label">Size:</label>
+              <select id="size-dropdown" className="app-dropdown" value={size} onChange={(e) => setSize(e.target.value)}>
+                <option value="256x256">256x256</option>
+                <option value="512x512">512x512</option>
+                <option value="1024x1024">1024x1024</option>
+              </select>
+            </div>
+            <div className="app-dropdown-section">
+              <label htmlFor="n-dropdown" className="app-dropdown-label">No of Variations:</label>
+              <select id="n-dropdown" className="app-dropdown" value={n} onChange={(e) => setN(parseInt(e.target.value))}>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+          </div>
           <input
             type="text"
             id="prompt-input"
@@ -40,16 +62,25 @@ function App() {
             placeholder={placeholder}
             onChange={(e) => setPrompt(e.target.value)}
           />
-          <button className="app-button" onClick={generateImage}>Generate an Image</button>
-          <div class="result-section">
-            {loading && (
-              <div className="loader">
+          <button className="app-button" onClick={generateImages}>Generate Images</button>
+          <div className="result-section">
+            {loading ? (
+              <div className="spinner-overlay">
+                <div className="image-spinner">
+                  <div className="image-spinner-dot"></div>
+                  <div className="image-spinner-dot"></div>
+                  <div className="image-spinner-dot"></div>
+                </div>
               </div>
-            )}
-            {result.length > 0 ? (
-              <img className="app-result-image" src={result} alt="result" />
             ) : (
-              <></>
+              results.map((result, index) => (
+                <img
+                  key={index}
+                  className="app-result-image"
+                  src={result}
+                  alt={`result-${index}`}
+                />
+              ))
             )}
           </div>
         </div>
