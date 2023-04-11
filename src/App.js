@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { Configuration, OpenAIApi } from "openai";
+import { useState } from 'react';
+import Select from 'react-select';
+import { Configuration, OpenAIApi } from 'openai';
+import { OPTIONS } from './constants';
 import "./App.css";
 
 function App() {
@@ -9,6 +11,7 @@ function App() {
   const [placeholder, setPlaceholder] = useState("3D design of a living room interior");
   const [size, setSize] = useState("256x256");
   const [n, setN] = useState(1);
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   const configuration = new Configuration({
     apiKey: process.env.ARCHGEN_OPENAI_API_KEY || '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',
@@ -26,6 +29,11 @@ function App() {
     });
     setLoading(false);
     setResults(res.data.data.map((item) => item.url));
+  };
+
+  const handleOptionChange = (options) => {
+    setSelectedOptions(options);
+    setPrompt(options.map((option) => option.label).join(', '));
   };
 
   return (
@@ -55,13 +63,20 @@ function App() {
               </select>
             </div>
           </div>
-          <input
+          <Select
+            options={OPTIONS}
+            isMulti
+            className="app-autocomplete"
+            onChange={handleOptionChange}
+            placeholder="Pick keywords"
+          />
+          {/* <input
             type="text"
             id="prompt-input"
             className="app-input"
             placeholder={placeholder}
             onChange={(e) => setPrompt(e.target.value)}
-          />
+          /> */}
           <button className="app-button" onClick={generateImages}>Generate Images</button>
           <div className="result-section">
             {loading ? (

@@ -157,3 +157,32 @@ body {
   align-items: center;
   z-index: 999;
 }
+
+.app-autocomplete {
+  margin-bottom: 10px;
+}
+
+.react-select__multi-value {
+  background-color: #4caf50;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.react-select__multi-value__label {
+  color: #fff;
+  padding: 5px;
+}
+
+.react-select__multi-value__remove {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  background-color: #388e3c;
+  border-radius: 0 2px 2px 0;
+  color: #fff;
+}
