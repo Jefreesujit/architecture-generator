@@ -14,7 +14,7 @@ function App() {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   const configuration = new Configuration({
-    apiKey: process.env.ARCHGEN_OPENAI_API_KEY || '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',
+    apiKey: process.env.ARCHGEN_OPENAI_API_KEY,
   });
 
   const openai = new OpenAIApi(configuration);
